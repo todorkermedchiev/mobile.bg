@@ -1,5 +1,7 @@
 package bg.sofia.uni.fmi.dp.mobile.advertisement;
 
+import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,5 +28,12 @@ public class InMemoryAdRepository implements AdvertisementRepository {
     @Override
     public List<Advertisement> findAll() {
         return new ArrayList<>(advertisements.values());
+    }
+
+    @Override
+    public List<Advertisement> filter(List<Filter<Advertisement>> filters) {
+        return findAll().stream()
+                .filter(car -> filters.stream().allMatch(filter -> filter.matches(car)))
+                .toList();
     }
 }
