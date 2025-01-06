@@ -46,4 +46,11 @@ public class QueryTester {
             System.out.println("Exception: " + e);
         }
     }
+
+    public static void main(String[] args) {
+        QueryParser queryParser = new QueryParser();
+        RPNSearcher searcher = new RPNSearcher(queryParser);
+        QueryTester tester = new QueryTester();
+        tester.test(searcher);
+    }
 }

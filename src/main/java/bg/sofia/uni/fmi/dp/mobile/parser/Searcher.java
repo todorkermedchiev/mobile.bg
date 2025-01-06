@@ -5,5 +5,5 @@ import bg.sofia.uni.fmi.dp.mobile.advertisement.Advertisement;
 import java.util.List;
 
 public interface Searcher {
-    List<Advertisement> search(List<Advertisement> listings, String query);
+    List<Advertisement> search(List<Advertisement> advertisements, String query);
 }

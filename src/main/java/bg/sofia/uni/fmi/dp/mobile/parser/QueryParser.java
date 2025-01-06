@@ -43,7 +43,12 @@ public class QueryParser {
             output.add(operators.pop());
         }
 
-        Collections.reverse(output);
+//        Collections.reverse(output);
         return output;
+    }
+
+    public static void main(String[] args) {
+        QueryParser parser = new QueryParser();
+        System.out.println(parser.toPolishNotation("brand = 'bmw' | model = 'a4'"));
     }
 }
