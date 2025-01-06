@@ -1,4 +1,7 @@
-package bg.sofia.uni.fmi.dp.mobile.filter;
+package bg.sofia.uni.fmi.dp.mobile.filter.primitive;
+
+import bg.sofia.uni.fmi.dp.mobile.filter.FieldExtractor;
+import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
 
 public class RangeFilter<T, V extends Comparable<V>> implements Filter<T> {
     private final FieldExtractor<T, V> fieldExtractor;

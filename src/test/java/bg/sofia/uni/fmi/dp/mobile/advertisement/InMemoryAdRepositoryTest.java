@@ -1,6 +1,6 @@
 package bg.sofia.uni.fmi.dp.mobile.advertisement;
 
-import bg.sofia.uni.fmi.dp.mobile.filter.ExactValueFilter;
+import bg.sofia.uni.fmi.dp.mobile.filter.primitive.ExactValueFilter;
 import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
 import bg.sofia.uni.fmi.dp.mobile.vehicle.Car;
 import org.junit.jupiter.api.BeforeEach;
