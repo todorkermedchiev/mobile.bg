@@ -5,6 +5,7 @@ import bg.sofia.uni.fmi.dp.mobile.filter.FieldExtractor;
 import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
 import bg.sofia.uni.fmi.dp.mobile.filter.composite.AndFilter;
 import bg.sofia.uni.fmi.dp.mobile.filter.composite.OrFilter;
+import bg.sofia.uni.fmi.dp.mobile.filter.primitive.CaseInsensitiveFilter;
 import bg.sofia.uni.fmi.dp.mobile.filter.primitive.comparable.CompareFilter;
 import bg.sofia.uni.fmi.dp.mobile.filter.primitive.comparable.ComparisonOperator;
 
@@ -30,6 +31,8 @@ public class RPNSearcher implements Searcher {
 
 
         for (String token : rpnQuery) {
+            token = token.replaceAll("^\"|\"$|^'|'$", "");
+
             if (ALLOWED_OPERATORS.contains(token)) {
                 Filter<Advertisement> filter = switch (token) {
                     case "=", "<", ">", "<=", ">=" -> {
@@ -73,6 +76,10 @@ public class RPNSearcher implements Searcher {
             default -> throw new IllegalArgumentException("Invalid operand: " + operand);
         };
 
-        return new CompareFilter<>(fieldExtractor, value, ComparisonOperator.fromString(operator)); // todo use some other primitive filters
+        return switch (operator) {
+            case "=" -> new CaseInsensitiveFilter<>(fieldExtractor, value);
+            case "<", ">", ">=", "<=" -> new CompareFilter<>(fieldExtractor, value, ComparisonOperator.fromString(operator));
+            default -> throw new IllegalArgumentException("Invalid operator: " + operator);
+        };
     }
 }
