@@ -4,16 +4,20 @@ import bg.sofia.uni.fmi.dp.mobile.advertisement.Advertisement;
 import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementRepository;
 import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementService;
 import bg.sofia.uni.fmi.dp.mobile.advertisement.InMemoryAdRepository;
-import bg.sofia.uni.fmi.dp.mobile.filter.ExactValueFilter;
+import bg.sofia.uni.fmi.dp.mobile.filter.primitive.ExactValueFilter;
 import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
-import bg.sofia.uni.fmi.dp.mobile.filter.RangeFilter;
-import bg.sofia.uni.fmi.dp.mobile.notification.observer.SubscriptionRule;
-import bg.sofia.uni.fmi.dp.mobile.notification.observer.publisher.AdvertisementPublisher;
-import bg.sofia.uni.fmi.dp.mobile.notification.observer.subscriber.AdvertisementSubscriber;
-import bg.sofia.uni.fmi.dp.mobile.notification.observer.subscriber.EmailAdvertisementSubscriber;
-import bg.sofia.uni.fmi.dp.mobile.notification.observer.subscriber.PigeonAdvertisementSubscriber;
-import bg.sofia.uni.fmi.dp.mobile.notification.observer.subscriber.SmsAdvertisementSubscriber;
-import bg.sofia.uni.fmi.dp.mobile.vehicle.Car;
+import bg.sofia.uni.fmi.dp.mobile.filter.primitive.RangeFilter;
+import bg.sofia.uni.fmi.dp.mobile.notification.SubscriptionRule;
+import bg.sofia.uni.fmi.dp.mobile.notification.notifier.EmailNotifier;
+import bg.sofia.uni.fmi.dp.mobile.notification.notifier.PigeonNotifier;
+import bg.sofia.uni.fmi.dp.mobile.notification.notifier.SmsNotifier;
+import bg.sofia.uni.fmi.dp.mobile.notification.publisher.AdvertisementPublisher;
+import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.AdvertisementSubscriber;
+import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.EmailAdvertisementSubscriber;
+import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.PigeonAdvertisementSubscriber;
+import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.SmsAdvertisementSubscriber;
+import bg.sofia.uni.fmi.dp.mobile.vehicle.Vehicle;
+import bg.sofia.uni.fmi.dp.mobile.vehicle.VehicleType;
 
 import java.util.List;
 
@@ -22,7 +26,9 @@ public class Main {
         AdvertisementService service = getAdvertisementService();
 
         // Създаване на нова обява
-        Advertisement ad = new Advertisement("audiA4", 15000, new Car("Audi", "A4", 2010, "Diesel"), "Mn qko audi", "Sofia");
+        Advertisement ad = new Advertisement("audiA4", 15000,
+                new Vehicle(VehicleType.CAR, "Audi", "A4", 2010).addAttribute("engineType", "Diesel"),
+                "Mn qko audi", "Sofia");
         service.addAdvertisement(ad);
 
         Filter<Advertisement> priceFilter = new RangeFilter<>(Advertisement::price, 10000d, 20000d);
@@ -52,9 +58,9 @@ public class Main {
         AdvertisementPublisher publisher = new AdvertisementPublisher();
 
         // Създаване на subscriber-и
-        AdvertisementSubscriber emailSubscriber = new EmailAdvertisementSubscriber("user@example.com", "title");
-        AdvertisementSubscriber smsSubscriber = new SmsAdvertisementSubscriber("123456789");
-        AdvertisementSubscriber pigeonSubscriber = new PigeonAdvertisementSubscriber("address", 1234);
+        AdvertisementSubscriber emailSubscriber = new EmailAdvertisementSubscriber(new EmailNotifier(), "user@example.com");
+        AdvertisementSubscriber smsSubscriber = new SmsAdvertisementSubscriber(new SmsNotifier(), "123456789");
+        AdvertisementSubscriber pigeonSubscriber = new PigeonAdvertisementSubscriber(new PigeonNotifier()   , "address", 1234);
 
         // Регистрация на subscriber-и
         publisher.subscribe(emailSubscriber);

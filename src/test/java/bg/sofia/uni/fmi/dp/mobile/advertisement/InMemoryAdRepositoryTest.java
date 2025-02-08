@@ -1,8 +1,9 @@
 package bg.sofia.uni.fmi.dp.mobile.advertisement;
 
-import bg.sofia.uni.fmi.dp.mobile.filter.ExactValueFilter;
+import bg.sofia.uni.fmi.dp.mobile.filter.primitive.ExactValueFilter;
 import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
-import bg.sofia.uni.fmi.dp.mobile.vehicle.Car;
+import bg.sofia.uni.fmi.dp.mobile.vehicle.Vehicle;
+import bg.sofia.uni.fmi.dp.mobile.vehicle.VehicleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +29,7 @@ public class InMemoryAdRepositoryTest {
     @Test
     void testSaveShouldAddTheAdvertisement() {
         String adId = "firstAd";
-        Car car = new Car("brand", "model", 2000, "diesel");
+        Vehicle car = new Vehicle(VehicleType.CAR, "brand", "model", 2000).addAttribute("engineType", "diesel");
         Advertisement ad = new Advertisement(adId, 2000, car, "Description", "Location");
         repository.save(ad);
 
@@ -39,7 +40,7 @@ public class InMemoryAdRepositoryTest {
     @Test
     void testDeleteShouldRemoveTheAdvertisement() {
         String adId = "firstAd";
-        Car car = new Car("brand", "model", 2000, "diesel");
+        Vehicle car = new Vehicle(VehicleType.CAR, "brand", "model", 2000).addAttribute("engineType", "diesel");
         Advertisement ad = new Advertisement(adId, 2000, car, "Description", "Location");
         repository.save(ad);
         assertEquals(1, repository.findAll().size(), "The advertisement is not added");
@@ -53,7 +54,7 @@ public class InMemoryAdRepositoryTest {
     @Test
     void testFilterWhenNothingMatches() {
         String adId = "firstAd";
-        Car car = new Car("brand", "model", 2000, "diesel");
+        Vehicle car = new Vehicle(VehicleType.CAR, "brand", "model", 2000).addAttribute("engineType", "diesel");
         Advertisement ad = new Advertisement(adId, 2000, car, "Description", "Location");
 
         repository.save(ad);
@@ -67,11 +68,11 @@ public class InMemoryAdRepositoryTest {
     @Test
     void testFilterWhenOneMatches() {
         String firstAdId = "firstAd";
-        Car firstCar = new Car("brand1", "model1", 2000, "diesel");
+        Vehicle firstCar = new Vehicle(VehicleType.CAR, "brand1", "model1", 2000).addAttribute("engineType", "diesel");
         Advertisement firstAd = new Advertisement(firstAdId, 2000, firstCar, "Description", "Location");
 
         String secondAdId = "secondAd";
-        Car secondCar = new Car("brand2", "model2", 2000, "petrol");
+        Vehicle secondCar = new Vehicle(VehicleType.CAR, "brand2", "model2", 2000).addAttribute("engineType", "petrol");
         Advertisement secondAd = new Advertisement(secondAdId, 2000, secondCar, "Description", "Location");
 
         repository.save(firstAd);
@@ -81,17 +82,17 @@ public class InMemoryAdRepositoryTest {
         List<Advertisement> matches = repository.filter(List.of(filter));
 
         assertEquals(1, matches.size(), "The method should return the advertisement when it matches the filter");
-        assertEquals(matches.getFirst(), firstAd, "The returned advertisement is not as expected");
+        assertEquals(matches.get(0), firstAd, "The returned advertisement is not as expected");
     }
 
     @Test
     void testFilterWhenAllMatches() {
         String firstAdId = "firstAd";
-        Car firstCar = new Car("brand1", "model1", 2000, "diesel");
+        Vehicle firstCar = new Vehicle(VehicleType.CAR, "brand1", "model1", 2000).addAttribute("engineType", "diesel");
         Advertisement firstAd = new Advertisement(firstAdId, 2000, firstCar, "Description", "Location");
 
         String secondAdId = "secondAd";
-        Car secondCar = new Car("brand2", "model2", 2000, "petrol");
+        Vehicle secondCar = new Vehicle(VehicleType.CAR, "brand2", "model2", 2000).addAttribute("engineType", "petrol");
         Advertisement secondAd = new Advertisement(secondAdId, 2000, secondCar, "Description", "Location");
 
         repository.save(firstAd);

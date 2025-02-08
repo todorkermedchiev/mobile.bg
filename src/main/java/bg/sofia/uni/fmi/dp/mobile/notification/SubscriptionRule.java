@@ -1,4 +1,4 @@
-package bg.sofia.uni.fmi.dp.mobile.notification.observer;
+package bg.sofia.uni.fmi.dp.mobile.notification;
 
 import bg.sofia.uni.fmi.dp.mobile.advertisement.Advertisement;
 import bg.sofia.uni.fmi.dp.mobile.filter.Filter;

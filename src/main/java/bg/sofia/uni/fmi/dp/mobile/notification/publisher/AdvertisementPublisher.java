@@ -1,6 +1,6 @@
-package bg.sofia.uni.fmi.dp.mobile.notification.observer.publisher;
+package bg.sofia.uni.fmi.dp.mobile.notification.publisher;
 
-import bg.sofia.uni.fmi.dp.mobile.notification.observer.subscriber.AdvertisementSubscriber;
+import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.AdvertisementSubscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +16,9 @@ public class AdvertisementPublisher {
         subscribers.remove(subscriber);
     }
 
-    public void notifySubscribers(String message) {
+    public void notifySubscribers(String title, String message) {
         for (AdvertisementSubscriber subscriber : subscribers) {
-            subscriber.notify(message);
+            subscriber.notify(title, message);
         }
     }
 }
