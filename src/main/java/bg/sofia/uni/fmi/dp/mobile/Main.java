@@ -16,7 +16,8 @@ import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.AdvertisementSubscribe
 import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.EmailAdvertisementSubscriber;
 import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.PigeonAdvertisementSubscriber;
 import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.SmsAdvertisementSubscriber;
-import bg.sofia.uni.fmi.dp.mobile.vehicle.Car;
+import bg.sofia.uni.fmi.dp.mobile.vehicle.Vehicle;
+import bg.sofia.uni.fmi.dp.mobile.vehicle.VehicleType;
 
 import java.util.List;
 
@@ -25,7 +26,9 @@ public class Main {
         AdvertisementService service = getAdvertisementService();
 
         // Създаване на нова обява
-        Advertisement ad = new Advertisement("audiA4", 15000, new Car("Audi", "A4", 2010, "Diesel"), "Mn qko audi", "Sofia");
+        Advertisement ad = new Advertisement("audiA4", 15000,
+                new Vehicle(VehicleType.CAR, "Audi", "A4", 2010).addAttribute("engineType", "Diesel"),
+                "Mn qko audi", "Sofia");
         service.addAdvertisement(ad);
 
         Filter<Advertisement> priceFilter = new RangeFilter<>(Advertisement::price, 10000d, 20000d);

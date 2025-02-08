@@ -1,7 +1,7 @@
 package bg.sofia.uni.fmi.dp.mobile.filter.primitive.comparable;
 
 public enum ComparisonOperator {
-//    EQUAL("=", (v1, v2) -> v1.compareTo(v2) == 0),
+    EQUAL("=", (v1, v2) -> v1.compareTo(v2) == 0),
     LESS_THAN("<", (v1, v2) -> v1.compareTo(v2) < 0),
     GREATER_THAN(">", (v1, v2) -> v1.compareTo(v2) > 0),
     LESS_THAN_OR_EQUAL("<=", (v1, v2) -> v1.compareTo(v2) <= 0),

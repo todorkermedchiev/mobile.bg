@@ -68,18 +68,65 @@ public class RPNSearcher implements Searcher {
     }
 
     private Filter<Advertisement> getPrimitiveFilterType(String operand, String value, String operator) {
-        FieldExtractor<Advertisement, String> fieldExtractor = switch (operand) {
+        FieldExtractor<Advertisement, ?> fieldExtractor = determineFieldExtractor(operand);
+        Object parsedValue = parseValue(value);
+
+        return createFilter(fieldExtractor, parsedValue, operator);
+    }
+
+    private FieldExtractor<Advertisement, ?> determineFieldExtractor(String operand) {
+        return switch (operand) {
+            case "price" -> Advertisement::price;
             case "brand" -> a -> a.vehicle().brand();
             case "model" -> a -> a.vehicle().model();
-            case "year" -> a -> a.vehicle().year().toString();
-            // todo add more fields or think of better way to extract fields by string
-            default -> throw new IllegalArgumentException("Invalid operand: " + operand);
-        };
-
-        return switch (operator) {
-            case "=" -> new CaseInsensitiveFilter<>(fieldExtractor, value);
-            case "<", ">", ">=", "<=" -> new CompareFilter<>(fieldExtractor, value, ComparisonOperator.fromString(operator));
-            default -> throw new IllegalArgumentException("Invalid operator: " + operator);
+            case "year" -> a -> a.vehicle().year();
+            default -> a -> a.vehicle().getAttribute(operand);
         };
     }
+
+    private Object parseValue(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException ignored) {
+            try {
+                return Double.parseDouble(value);
+            } catch (NumberFormatException ignored2) {
+                return value; // Връщаме като String, ако не може да се парсне като число.
+            }
+        }
+    }
+
+    private Filter<Advertisement> createFilter(FieldExtractor<Advertisement, ?> fieldExtractor, Object value, String operator) {
+        if (value instanceof Integer intValue) {
+            return new CompareFilter<>((FieldExtractor<Advertisement, Integer>) fieldExtractor, intValue, ComparisonOperator.fromString(operator));
+        } else if (value instanceof Double doubleValue) {
+            return new CompareFilter<>((FieldExtractor<Advertisement, Double>) fieldExtractor, doubleValue, ComparisonOperator.fromString(operator));
+        } else {
+            return new CaseInsensitiveFilter<>((FieldExtractor<Advertisement, String>) fieldExtractor, (String) value);
+        }
+    }
+
+
+//    private Filter<Advertisement> getPrimitiveFilterType(String operand, String value, String operator) {
+//        try {
+//            int intValue = Integer.parseInt(value);
+//            FieldExtractor<Advertisement, Integer> fieldExtractor = switch (operand) {
+//                case "year" -> a -> a.vehicle().year();
+//                default -> a -> Integer.parseInt(a.vehicle().getAttribute(operand));
+//            };
+//            return new CompareFilter<>(fieldExtractor, intValue, ComparisonOperator.fromString(operator));
+//        } catch (NumberFormatException intParseException) {
+//            try {
+//                double doubleValue = Double.parseDouble(value);
+//                FieldExtractor<Advertisement, Double> fieldExtractor = switch (operand) {
+//                    case "price" -> Advertisement::price;
+//                    default -> a -> Double.parseDouble(a.vehicle().getAttribute(operand));
+//                };
+//                return new CompareFilter<>(fieldExtractor, doubleValue, ComparisonOperator.fromString(operator));
+//            } catch (NumberFormatException doubleParseException) {
+//                FieldExtractor<Advertisement, String> fieldExtractor = a -> a.vehicle().getAttribute(operand);
+//                return new CaseInsensitiveFilter<>(fieldExtractor, value);
+//            }
+//        }
+//    }
 }
