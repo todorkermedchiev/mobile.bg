@@ -82,7 +82,7 @@ public class InMemoryAdRepositoryTest {
         List<Advertisement> matches = repository.filter(List.of(filter));
 
         assertEquals(1, matches.size(), "The method should return the advertisement when it matches the filter");
-        assertEquals(matches.getFirst(), firstAd, "The returned advertisement is not as expected");
+        assertEquals(matches.get(0), firstAd, "The returned advertisement is not as expected");
     }
 
     @Test
