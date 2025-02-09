@@ -28,12 +28,12 @@ public class AdvertisementService {
 //        }
     }
 
-    public void removeAdvertisement(String id) {
-        repository.delete(id);
+    public void removeAdvertisement(String title) {
+        repository.delete(title);
     }
 
-    public Advertisement getAdvertisement(String id) {
-        return repository.findById(id);
+    public Advertisement getAdvertisement(String title) {
+        return repository.findByTitle(title);
     }
 
     public List<Advertisement> searchAdvertisements(List<Filter<Advertisement>> filters) {

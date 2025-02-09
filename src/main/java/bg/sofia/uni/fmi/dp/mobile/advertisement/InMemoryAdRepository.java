@@ -12,17 +12,17 @@ public class InMemoryAdRepository implements AdvertisementRepository {
 
     @Override
     public void save(Advertisement advertisement) {
-        advertisements.put(advertisement.id(), advertisement);
+        advertisements.put(advertisement.title(), advertisement);
     }
 
     @Override
-    public void delete(String id) {
-        advertisements.remove(id);
+    public void delete(String title) {
+        advertisements.remove(title);
     }
 
     @Override
-    public Advertisement findById(String id) {
-        return advertisements.get(id);
+    public Advertisement findByTitle(String title) {
+        return advertisements.get(title);
     }
 
     @Override

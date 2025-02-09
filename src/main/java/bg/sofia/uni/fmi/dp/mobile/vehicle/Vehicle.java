@@ -13,12 +13,15 @@ public class Vehicle {
     private final Map<String, String> attributes;
 
     public Vehicle(VehicleType type, String brand, String model, Integer year) {
+        this(type, brand, model, year, new HashMap<>());
+    }
+
+    public Vehicle(VehicleType type, String brand, String model, Integer year, Map<String, String> attributes) {
         this.type = type;
         this.brand = brand;
         this.model = model;
         this.year = year;
-
-        this.attributes = new HashMap<>();
+        this.attributes = attributes;
     }
 
     public VehicleType type() {
@@ -52,10 +55,5 @@ public class Vehicle {
 //            throw new RuntimeException(); // todo another exception type
 //        }
         return value;
-    }
-
-    public Optional<Class<?>> getAttributeType(String name) {
-        Object value = attributes.get(name);
-        return value != null ? Optional.of(value.getClass()) : Optional.empty();
     }
 }

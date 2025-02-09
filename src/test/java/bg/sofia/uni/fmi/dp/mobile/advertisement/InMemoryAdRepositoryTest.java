@@ -28,38 +28,38 @@ public class InMemoryAdRepositoryTest {
 
     @Test
     void testSaveShouldAddTheAdvertisement() {
-        String adId = "firstAd";
+        String title = "firstAd";
         Vehicle car = new Vehicle(VehicleType.CAR, "brand", "model", 2000).addAttribute("engineType", "diesel");
-        Advertisement ad = new Advertisement(adId, 2000, car, "Description", "Location");
+        Advertisement ad = new Advertisement(title, 2000, car, "Description", "Location");
         repository.save(ad);
 
         assertEquals(1, repository.findAll().size(), "The advertisement is not added");
-        assertEquals(ad, repository.findById(adId), "The advertisement is not found by ID");
+        assertEquals(ad, repository.findByTitle(title), "The advertisement is not found by its title");
     }
 
     @Test
     void testDeleteShouldRemoveTheAdvertisement() {
-        String adId = "firstAd";
+        String title = "firstAd";
         Vehicle car = new Vehicle(VehicleType.CAR, "brand", "model", 2000).addAttribute("engineType", "diesel");
-        Advertisement ad = new Advertisement(adId, 2000, car, "Description", "Location");
+        Advertisement ad = new Advertisement(title, 2000, car, "Description", "Location");
         repository.save(ad);
         assertEquals(1, repository.findAll().size(), "The advertisement is not added");
-        assertEquals(ad, repository.findById(adId), "The advertisement is not found by ID");
+        assertEquals(ad, repository.findByTitle(title), "The advertisement is not found by its title");
 
-        repository.delete(adId);
+        repository.delete(title);
         assertTrue(repository.findAll().isEmpty(), "The advertisement is not deleted");
-        assertNull(repository.findById(adId));
+        assertNull(repository.findByTitle(title));
     }
 
     @Test
     void testFilterWhenNothingMatches() {
-        String adId = "firstAd";
+        String title = "firstAd";
         Vehicle car = new Vehicle(VehicleType.CAR, "brand", "model", 2000).addAttribute("engineType", "diesel");
-        Advertisement ad = new Advertisement(adId, 2000, car, "Description", "Location");
+        Advertisement ad = new Advertisement(title, 2000, car, "Description", "Location");
 
         repository.save(ad);
 
-        Filter<Advertisement> filter = new ExactValueFilter<>(Advertisement::id, "anotherId"); // maybe mock this
+        Filter<Advertisement> filter = new ExactValueFilter<>(Advertisement::title, "anotherTitle"); // maybe mock this
         List<Advertisement> matches = repository.filter(List.of(filter));
 
         assertTrue(matches.isEmpty(), "The method should return empty list when nothing matches the filter");
@@ -67,18 +67,18 @@ public class InMemoryAdRepositoryTest {
 
     @Test
     void testFilterWhenOneMatches() {
-        String firstAdId = "firstAd";
+        String firstAdTitle = "firstAd";
         Vehicle firstCar = new Vehicle(VehicleType.CAR, "brand1", "model1", 2000).addAttribute("engineType", "diesel");
-        Advertisement firstAd = new Advertisement(firstAdId, 2000, firstCar, "Description", "Location");
+        Advertisement firstAd = new Advertisement(firstAdTitle, 2000, firstCar, "Description", "Location");
 
-        String secondAdId = "secondAd";
+        String secondAdTitle = "secondAd";
         Vehicle secondCar = new Vehicle(VehicleType.CAR, "brand2", "model2", 2000).addAttribute("engineType", "petrol");
-        Advertisement secondAd = new Advertisement(secondAdId, 2000, secondCar, "Description", "Location");
+        Advertisement secondAd = new Advertisement(secondAdTitle, 2000, secondCar, "Description", "Location");
 
         repository.save(firstAd);
         repository.save(secondAd);
 
-        Filter<Advertisement> filter = new ExactValueFilter<>(Advertisement::id, firstAdId);
+        Filter<Advertisement> filter = new ExactValueFilter<>(Advertisement::title, firstAdTitle);
         List<Advertisement> matches = repository.filter(List.of(filter));
 
         assertEquals(1, matches.size(), "The method should return the advertisement when it matches the filter");
@@ -87,13 +87,13 @@ public class InMemoryAdRepositoryTest {
 
     @Test
     void testFilterWhenAllMatches() {
-        String firstAdId = "firstAd";
+        String firstAdTitle = "firstAd";
         Vehicle firstCar = new Vehicle(VehicleType.CAR, "brand1", "model1", 2000).addAttribute("engineType", "diesel");
-        Advertisement firstAd = new Advertisement(firstAdId, 2000, firstCar, "Description", "Location");
+        Advertisement firstAd = new Advertisement(firstAdTitle, 2000, firstCar, "Description", "Location");
 
-        String secondAdId = "secondAd";
+        String secondAdTitle = "secondAd";
         Vehicle secondCar = new Vehicle(VehicleType.CAR, "brand2", "model2", 2000).addAttribute("engineType", "petrol");
-        Advertisement secondAd = new Advertisement(secondAdId, 2000, secondCar, "Description", "Location");
+        Advertisement secondAd = new Advertisement(secondAdTitle, 2000, secondCar, "Description", "Location");
 
         repository.save(firstAd);
         repository.save(secondAd);
