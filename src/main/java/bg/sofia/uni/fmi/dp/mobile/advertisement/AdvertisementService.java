@@ -3,16 +3,19 @@ package bg.sofia.uni.fmi.dp.mobile.advertisement;
 import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
 import bg.sofia.uni.fmi.dp.mobile.notification.SubscriptionRule;
 import bg.sofia.uni.fmi.dp.mobile.notification.publisher.AdvertisementPublisher;
+import bg.sofia.uni.fmi.dp.mobile.parser.Searcher;
 
 import java.util.List;
 
 public class AdvertisementService {
     private final AdvertisementRepository repository;
+    private final Searcher searcher;
 //    private final AdvertisementPublisher publisher;
 //    private final List<SubscriptionRule> subscriptionRules; // todo maybe not immutable
 
-    public AdvertisementService(AdvertisementRepository repository, AdvertisementPublisher publisher, List<SubscriptionRule> subscriptionRules) {
+    public AdvertisementService(AdvertisementRepository repository, Searcher searcher/*, AdvertisementPublisher publisher, List<SubscriptionRule> subscriptionRules*/) {
         this.repository = repository;
+        this.searcher = searcher;
 //        this.publisher = publisher;
 //        this.subscriptionRules = subscriptionRules; // todo maybe setter, methods for adding and removing or extract to another class
     }

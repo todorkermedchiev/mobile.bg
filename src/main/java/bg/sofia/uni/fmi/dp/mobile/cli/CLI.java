@@ -8,20 +8,26 @@ import java.util.Scanner;
 
 public class CLI {
     private final CommandRegistry registry;
-    private final Scanner scanner = new Scanner(System.in);
-    private final PrintStream printer = System.out;
+    private final Scanner scanner;
+    private final PrintStream printer;
 
     private static final String EXIT_COMMAND = "exit";
 
     public CLI(CommandRegistry registry) {
+        this(registry, new Scanner(System.in), System.out);
+    }
+
+    public CLI(CommandRegistry registry, Scanner scanner, PrintStream printer) {
         this.registry = registry;
+        this.printer = printer;
+        this.scanner = scanner;
     }
 
     public void start() {
         CommandExecutor executor = new CommandExecutor(registry);
 
         while (true) {
-            System.out.print(">> ");
+            printer.print(">> ");
             String input = this.scanner.nextLine().trim();
             if (input.equalsIgnoreCase(EXIT_COMMAND)) {
                 break;
@@ -29,9 +35,9 @@ public class CLI {
 
             try {
                 String message = executor.execute(input);
-                System.out.println(message);
+                printer.println(message);
             } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
+                printer.println(e.getMessage());
             }
         }
     }
