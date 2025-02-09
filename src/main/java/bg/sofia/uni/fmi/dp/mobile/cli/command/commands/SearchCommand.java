@@ -1,29 +1,32 @@
 package bg.sofia.uni.fmi.dp.mobile.cli.command.commands;
 
-import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementRepository;
-import bg.sofia.uni.fmi.dp.mobile.parser.Searcher;
+import bg.sofia.uni.fmi.dp.mobile.advertisement.Advertisement;
+import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementService;
 
+import java.io.PrintStream;
+import java.util.List;
 import java.util.Scanner;
 
 public class SearchCommand implements Command {
     private static final String COMMAND_NAME = "search";
 
-    private final Searcher searcher;
-    private final AdvertisementRepository repository;
+    private final AdvertisementService service;
+    private final Scanner scanner;
+    private final PrintStream printer;
 
-    public SearchCommand(Searcher searcher, AdvertisementRepository repository) {
-        this.searcher = searcher;
-        this.repository = repository;
+    public SearchCommand(AdvertisementService service, Scanner scanner, PrintStream printer) {
+        this.service = service;
+        this.scanner = scanner;
+        this.printer = printer;
     }
 
     @Override
     public void execute() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter search query: ");
+        printer.print("Enter search query: ");
         String query = scanner.nextLine();
 
-        var results = searcher.search(repository.findAll(), query);
-        results.forEach(System.out::println);
+        List<Advertisement> results = service.searchAdvertisements(query);
+        results.forEach(printer::println);
     }
 
     @Override

@@ -9,4 +9,14 @@ public record Advertisement(
         String description,
         String location
 ) {
+    @Override
+    public String toString() {
+        return "Advertisement{" +
+                "title='" + title + '\'' +
+                ", price=" + price +
+                ", vehicle=" + vehicle +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                '}';
+    }
 }

@@ -7,6 +7,7 @@ import bg.sofia.uni.fmi.dp.mobile.advertisement.InMemoryAdRepository;
 import bg.sofia.uni.fmi.dp.mobile.cli.CLI;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.CommandRegistry;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.commands.AddAdvertisementCommand;
+import bg.sofia.uni.fmi.dp.mobile.cli.command.commands.SearchCommand;
 import bg.sofia.uni.fmi.dp.mobile.filter.primitive.ExactValueFilter;
 import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
 import bg.sofia.uni.fmi.dp.mobile.filter.primitive.RangeFilter;
@@ -21,6 +22,7 @@ import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.PigeonAdvertisementSub
 import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.SmsAdvertisementSubscriber;
 import bg.sofia.uni.fmi.dp.mobile.parser.QueryParser;
 import bg.sofia.uni.fmi.dp.mobile.parser.RPNSearcher;
+import bg.sofia.uni.fmi.dp.mobile.parser.Searcher;
 import bg.sofia.uni.fmi.dp.mobile.vehicle.Vehicle;
 import bg.sofia.uni.fmi.dp.mobile.vehicle.VehicleType;
 
@@ -33,10 +35,13 @@ public class Main {
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void main(String[] args) {
-        AdvertisementService advertisementService = new AdvertisementService(new InMemoryAdRepository(), new RPNSearcher(new QueryParser()));
+        AdvertisementRepository advertisementRepository = new InMemoryAdRepository();
+        Searcher searcher = new RPNSearcher(new QueryParser());
+        AdvertisementService advertisementService = new AdvertisementService(advertisementRepository, searcher);
 
         CommandRegistry commandRegistry = new CommandRegistry();
         commandRegistry.addCommand(new AddAdvertisementCommand(advertisementService, SCANNER, PRINTER));
+        commandRegistry.addCommand(new SearchCommand(advertisementService, SCANNER, PRINTER));
 
         CLI cli = new CLI(commandRegistry);
         cli.start();

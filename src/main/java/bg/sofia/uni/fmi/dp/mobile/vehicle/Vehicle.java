@@ -56,4 +56,15 @@ public class Vehicle {
 //        }
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "type=" + type +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", year=" + year +
+                ", attributes=" + attributes +
+                '}';
+    }
 }
