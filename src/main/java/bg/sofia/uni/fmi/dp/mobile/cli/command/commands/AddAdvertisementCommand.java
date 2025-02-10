@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class AddAdvertisementCommand implements Command {
     private static final String COMMAND_NAME = "add-advertisement";
+    private static final String COMMAND_DESCRIPTION = "Add a new advertisement";
 
     private final AdvertisementService service;
     private final Scanner scanner;
@@ -34,7 +35,7 @@ public class AddAdvertisementCommand implements Command {
 
     @Override
     public String getDescription() {
-        return "Add a new advertisement";
+        return COMMAND_DESCRIPTION;
     }
 }
 

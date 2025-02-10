@@ -30,6 +30,6 @@ public enum SubscriberType {
             }
         }
 
-        throw new RuntimeException("Unknown type"); // todo another exception type
+        throw new RuntimeException("Unknown notification method: " + name);
     }
 }

@@ -9,5 +9,5 @@ public interface AdvertisementRepository {
     void delete(String id);
     Advertisement findByTitle(String title);
     List<Advertisement> findAll();
-    List<Advertisement> filter(List<Filter<Advertisement>> filter); // todo generic ???
+    List<Advertisement> filter(List<Filter<Advertisement>> filter);
 }

@@ -1,7 +1,6 @@
 package bg.sofia.uni.fmi.dp.mobile.cli.command.commands;
 
 import bg.sofia.uni.fmi.dp.mobile.advertisement.Advertisement;
-import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementBuilder;
 import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
 import bg.sofia.uni.fmi.dp.mobile.notification.NotificationRule;
 import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.AdvertisementSubscriber;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class NotificationRuleCreator {
+public class NotificationRuleCreator { // todo maybe remove and make these things in SubscribeCommand::execute
     private final QueryFilterCreator queryFilterCreator;
     private final PrintStream printer;
     private final Scanner scanner;

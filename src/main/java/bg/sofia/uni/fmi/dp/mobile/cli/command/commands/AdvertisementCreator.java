@@ -48,7 +48,7 @@ public class AdvertisementCreator {
     }
 
     public AdvertisementCreator(AdvertisementBuilder builder, PrintStream printer, Scanner scanner) {
-        this.builder = new AdvertisementBuilder();
+        this.builder = builder;
         this.printer = printer;
         this.scanner = scanner;
     }

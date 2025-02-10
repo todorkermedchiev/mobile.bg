@@ -75,9 +75,4 @@ public class VehicleCreator {
         steps.forEach(CommandStep::execute);
         return builder.build();
     }
-
-    public static void main(String[] args) { // todo remove
-        VehicleCreator vehicleCreator = new VehicleCreator(System.out, new Scanner(System.in));
-        System.out.println(vehicleCreator.create());
-    }
 }

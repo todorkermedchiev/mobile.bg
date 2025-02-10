@@ -2,7 +2,6 @@ package bg.sofia.uni.fmi.dp.mobile.vehicle;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class Vehicle {
     private final VehicleType type;
@@ -50,11 +49,7 @@ public class Vehicle {
     }
 
     public String getAttribute(String name) {
-        String value = attributes.get(name);
-//        if (value == null) {
-//            throw new RuntimeException(); // todo another exception type
-//        }
-        return value;
+        return attributes.get(name);
     }
 
     @Override
