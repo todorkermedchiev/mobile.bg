@@ -1,6 +1,5 @@
 package bg.sofia.uni.fmi.dp.mobile;
 
-import bg.sofia.uni.fmi.dp.mobile.advertisement.Advertisement;
 import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementRepository;
 import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementService;
 import bg.sofia.uni.fmi.dp.mobile.advertisement.InMemoryAdRepository;
@@ -8,26 +7,15 @@ import bg.sofia.uni.fmi.dp.mobile.cli.CLI;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.CommandRegistry;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.commands.AddAdvertisementCommand;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.commands.SearchCommand;
-import bg.sofia.uni.fmi.dp.mobile.filter.primitive.ExactValueFilter;
-import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
-import bg.sofia.uni.fmi.dp.mobile.filter.primitive.RangeFilter;
-import bg.sofia.uni.fmi.dp.mobile.notification.SubscriptionRule;
-import bg.sofia.uni.fmi.dp.mobile.notification.notifier.EmailNotifier;
-import bg.sofia.uni.fmi.dp.mobile.notification.notifier.PigeonNotifier;
-import bg.sofia.uni.fmi.dp.mobile.notification.notifier.SmsNotifier;
-import bg.sofia.uni.fmi.dp.mobile.notification.publisher.AdvertisementPublisher;
-import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.AdvertisementSubscriber;
-import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.EmailAdvertisementSubscriber;
-import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.PigeonAdvertisementSubscriber;
-import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.SmsAdvertisementSubscriber;
-import bg.sofia.uni.fmi.dp.mobile.parser.QueryParser;
+import bg.sofia.uni.fmi.dp.mobile.cli.command.commands.SubscribeCommand;
+import bg.sofia.uni.fmi.dp.mobile.notification.NotificationService;
+import bg.sofia.uni.fmi.dp.mobile.parser.QueryFilterCreator;
+import bg.sofia.uni.fmi.dp.mobile.parser.RPNQueryFilterCreator;
+import bg.sofia.uni.fmi.dp.mobile.parser.RPNQueryParser;
 import bg.sofia.uni.fmi.dp.mobile.parser.RPNSearcher;
 import bg.sofia.uni.fmi.dp.mobile.parser.Searcher;
-import bg.sofia.uni.fmi.dp.mobile.vehicle.Vehicle;
-import bg.sofia.uni.fmi.dp.mobile.vehicle.VehicleType;
 
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -36,12 +24,15 @@ public class Main {
 
     public static void main(String[] args) {
         AdvertisementRepository advertisementRepository = new InMemoryAdRepository();
-        Searcher searcher = new RPNSearcher(new QueryParser());
-        AdvertisementService advertisementService = new AdvertisementService(advertisementRepository, searcher);
+        QueryFilterCreator queryFilterCreator = new RPNQueryFilterCreator(new RPNQueryParser());
+        Searcher searcher = new RPNSearcher(queryFilterCreator);
+        NotificationService notificationService = new NotificationService();
+        AdvertisementService advertisementService = new AdvertisementService(advertisementRepository, searcher, notificationService);
 
         CommandRegistry commandRegistry = new CommandRegistry();
         commandRegistry.addCommand(new AddAdvertisementCommand(advertisementService, SCANNER, PRINTER));
         commandRegistry.addCommand(new SearchCommand(advertisementService, SCANNER, PRINTER));
+        commandRegistry.addCommand(new SubscribeCommand(advertisementService, queryFilterCreator, SCANNER, PRINTER));
 
         CLI cli = new CLI(commandRegistry);
         cli.start();

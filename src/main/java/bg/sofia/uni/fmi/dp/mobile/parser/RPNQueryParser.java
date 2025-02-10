@@ -1,13 +1,12 @@
 package bg.sofia.uni.fmi.dp.mobile.parser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class QueryParser {
+public class RPNQueryParser {
     public List<String> toPolishNotation(String query) {
         Map<String, Integer> precedence = new HashMap<>();
         precedence.put("|", 1);
@@ -43,12 +42,11 @@ public class QueryParser {
             output.add(operators.pop());
         }
 
-//        Collections.reverse(output);
         return output;
     }
 
     public static void main(String[] args) {
-        QueryParser parser = new QueryParser();
+        RPNQueryParser parser = new RPNQueryParser();
         System.out.println(parser.toPolishNotation("brand = 'bmw' | model = 'a4'"));
     }
 }

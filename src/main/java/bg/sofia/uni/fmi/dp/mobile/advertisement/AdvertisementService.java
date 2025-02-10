@@ -1,5 +1,7 @@
 package bg.sofia.uni.fmi.dp.mobile.advertisement;
 
+import bg.sofia.uni.fmi.dp.mobile.notification.NotificationRule;
+import bg.sofia.uni.fmi.dp.mobile.notification.NotificationService;
 import bg.sofia.uni.fmi.dp.mobile.parser.Searcher;
 
 import java.util.List;
@@ -7,14 +9,17 @@ import java.util.List;
 public class AdvertisementService {
     private final AdvertisementRepository repository;
     private final Searcher searcher;
+    private final NotificationService notificationService;
 
-    public AdvertisementService(AdvertisementRepository repository, Searcher searcher) {
+    public AdvertisementService(AdvertisementRepository repository, Searcher searcher, NotificationService notificationService) {
         this.repository = repository;
         this.searcher = searcher;
+        this.notificationService = notificationService;
     }
 
     public void addAdvertisement(Advertisement advertisement) {
         repository.save(advertisement);
+        notificationService.onNewAdvertisementAdded(advertisement);
     }
 
     public void removeAdvertisement(String title) {
@@ -25,11 +30,15 @@ public class AdvertisementService {
         return repository.findByTitle(title);
     }
 
+    public List<Advertisement> getAllAdvertisements() {
+        return repository.findAll();
+    }
+
     public List<Advertisement> searchAdvertisements(String query) {
         return searcher.search(repository.findAll(), query);
     }
 
-    public List<Advertisement> getAllAdvertisements() {
-        return repository.findAll();
+    public void subscribe(NotificationRule notificationRule) {
+        notificationService.subscribe(notificationRule);
     }
 }

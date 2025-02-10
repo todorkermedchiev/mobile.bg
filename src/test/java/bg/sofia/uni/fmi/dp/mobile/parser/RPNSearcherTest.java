@@ -38,8 +38,9 @@ class RPNSearcherTest {
 
     @BeforeEach
     void setUp() {
-        QueryParser queryParser = new QueryParser();
-        searcher = new RPNSearcher(queryParser);
+        RPNQueryParser rpnQueryParser = new RPNQueryParser();
+        QueryFilterCreator queryFilterCreator = new RPNQueryFilterCreator(rpnQueryParser);
+        searcher = new RPNSearcher(queryFilterCreator);
     }
 
     static Stream<Arguments> queryProvider() {
