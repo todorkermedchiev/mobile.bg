@@ -1,46 +1,44 @@
 package bg.sofia.uni.fmi.dp.mobile.advertisement;
 
-import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
-import bg.sofia.uni.fmi.dp.mobile.notification.SubscriptionRule;
-import bg.sofia.uni.fmi.dp.mobile.notification.publisher.AdvertisementPublisher;
+import bg.sofia.uni.fmi.dp.mobile.notification.NotificationRule;
+import bg.sofia.uni.fmi.dp.mobile.notification.NotificationService;
+import bg.sofia.uni.fmi.dp.mobile.parser.Searcher;
 
 import java.util.List;
 
 public class AdvertisementService {
     private final AdvertisementRepository repository;
-//    private final AdvertisementPublisher publisher;
-//    private final List<SubscriptionRule> subscriptionRules; // todo maybe not immutable
+    private final Searcher searcher;
+    private final NotificationService notificationService;
 
-    public AdvertisementService(AdvertisementRepository repository, AdvertisementPublisher publisher, List<SubscriptionRule> subscriptionRules) {
+    public AdvertisementService(AdvertisementRepository repository, Searcher searcher, NotificationService notificationService) {
         this.repository = repository;
-//        this.publisher = publisher;
-//        this.subscriptionRules = subscriptionRules; // todo maybe setter, methods for adding and removing or extract to another class
+        this.searcher = searcher;
+        this.notificationService = notificationService;
     }
 
     public void addAdvertisement(Advertisement advertisement) {
         repository.save(advertisement);
-
-//        for (SubscriptionRule rule : subscriptionRules) {
-//            if (rule.matches(advertisement)) {
-//                String message = "New advertisement: " + advertisement.toString();
-//                publisher.notifySubscribers(message);
-//            }
-//        }
+        notificationService.onNewAdvertisementAdded(advertisement);
     }
 
-    public void removeAdvertisement(String id) {
-        repository.delete(id);
+    public void removeAdvertisement(String title) {
+        repository.delete(title);
     }
 
-    public Advertisement getAdvertisement(String id) {
-        return repository.findById(id);
-    }
-
-    public List<Advertisement> searchAdvertisements(List<Filter<Advertisement>> filters) {
-        return repository.filter(filters);
+    public Advertisement getAdvertisement(String title) {
+        return repository.findByTitle(title);
     }
 
     public List<Advertisement> getAllAdvertisements() {
         return repository.findAll();
+    }
+
+    public List<Advertisement> searchAdvertisements(String query) {
+        return searcher.search(repository.findAll(), query);
+    }
+
+    public void subscribe(NotificationRule notificationRule) {
+        notificationService.subscribe(notificationRule);
     }
 }

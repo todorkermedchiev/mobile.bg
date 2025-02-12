@@ -3,11 +3,20 @@ package bg.sofia.uni.fmi.dp.mobile.advertisement;
 import bg.sofia.uni.fmi.dp.mobile.vehicle.Vehicle;
 
 public record Advertisement(
-        String id, // todo improve
+        String title,
         double price,
         Vehicle vehicle,
         String description,
         String location
-        // todo ...
 ) {
+    @Override
+    public String toString() {
+        return "Advertisement{" +
+                "title='" + title + '\'' +
+                ", price=" + price +
+                ", vehicle=" + vehicle +
+                ", description='" + description + '\'' +
+                ", location='" + location + '\'' +
+                '}';
+    }
 }
