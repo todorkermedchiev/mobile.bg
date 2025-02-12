@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.dp.mobile.advertisement;
 
 import bg.sofia.uni.fmi.dp.mobile.vehicle.Vehicle;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class AdvertisementBuilder {
@@ -10,6 +11,7 @@ public class AdvertisementBuilder {
     private Vehicle vehicle;
     private String description;
     private String location;
+    private LocalDateTime createdAt;
 
     public AdvertisementBuilder setTitle(String title) {
         this.title = title;
@@ -36,13 +38,19 @@ public class AdvertisementBuilder {
         return this;
     }
 
+    public AdvertisementBuilder setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
     public Advertisement build() {
         return new Advertisement(
                 Objects.requireNonNull(title),
                 Objects.requireNonNull(price),
                 Objects.requireNonNull(vehicle),
                 Objects.requireNonNull(description),
-                Objects.requireNonNull(location)
+                Objects.requireNonNull(location),
+                Objects.requireNonNull(createdAt)
         );
     }
 }

@@ -1,10 +1,13 @@
 package bg.sofia.uni.fmi.dp.mobile.advertisement;
 
+import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
 import bg.sofia.uni.fmi.dp.mobile.notification.NotificationRule;
 import bg.sofia.uni.fmi.dp.mobile.notification.NotificationService;
 import bg.sofia.uni.fmi.dp.mobile.parser.Searcher;
 
+import java.time.Year;
 import java.util.List;
+import java.util.Map;
 
 public class AdvertisementService {
     private final AdvertisementRepository repository;
@@ -40,5 +43,9 @@ public class AdvertisementService {
 
     public void subscribe(NotificationRule notificationRule) {
         notificationService.subscribe(notificationRule);
+    }
+
+    public Map<Year, Double> getPriceStats(List<Filter<Advertisement>> filters) {
+        return repository.getPriceStats(filters);
     }
 }

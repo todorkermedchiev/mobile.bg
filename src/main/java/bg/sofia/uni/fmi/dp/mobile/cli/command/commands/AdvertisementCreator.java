@@ -4,6 +4,7 @@ import bg.sofia.uni.fmi.dp.mobile.advertisement.Advertisement;
 import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementBuilder;
 
 import java.io.PrintStream;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -55,6 +56,8 @@ public class AdvertisementCreator {
 
     public Advertisement create() {
         steps.forEach(CommandStep::execute);
+        builder.setCreatedAt(LocalDateTime.now());
+
         return builder.build();
     }
 
