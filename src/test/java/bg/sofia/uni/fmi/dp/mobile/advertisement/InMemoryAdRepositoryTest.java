@@ -143,7 +143,7 @@ public class InMemoryAdRepositoryTest {
         assertEquals(expected.size(), actual.size(), "The price statistics does not contain all of the years, or contains more than expected");
         expected.forEach((key, value) -> {
             assertTrue(actual.containsKey(key), "Missing key: " + key);
-            assertEquals(value, actual.get(key), "Wrong value for key: " + key);
+            assertEquals(value, actual.get(key), 0.001, "Wrong value for key: " + key);
         });
     }
 }

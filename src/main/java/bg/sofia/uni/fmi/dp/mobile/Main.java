@@ -6,6 +6,7 @@ import bg.sofia.uni.fmi.dp.mobile.advertisement.InMemoryAdRepository;
 import bg.sofia.uni.fmi.dp.mobile.cli.CLI;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.CommandRegistry;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.commands.AddAdvertisementCommand;
+import bg.sofia.uni.fmi.dp.mobile.cli.command.commands.GetStatisticsCommand;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.commands.SearchCommand;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.commands.SubscribeCommand;
 import bg.sofia.uni.fmi.dp.mobile.notification.NotificationService;
@@ -33,6 +34,7 @@ public class Main {
         commandRegistry.addCommand(new AddAdvertisementCommand(advertisementService, SCANNER, PRINTER));
         commandRegistry.addCommand(new SearchCommand(advertisementService, SCANNER, PRINTER));
         commandRegistry.addCommand(new SubscribeCommand(advertisementService, queryFilterCreator, SCANNER, PRINTER));
+        commandRegistry.addCommand(new GetStatisticsCommand(advertisementService, queryFilterCreator, SCANNER, PRINTER));
 
         CLI cli = new CLI(commandRegistry);
         cli.start();
