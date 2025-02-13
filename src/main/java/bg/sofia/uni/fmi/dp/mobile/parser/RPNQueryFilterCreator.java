@@ -83,17 +83,16 @@ public class RPNQueryFilterCreator implements QueryFilterCreator {
     }
 
     private Object parseValue(String value) {
-        try {
+        if (value.matches("-?\\d+")) {
             return Integer.parseInt(value);
-        } catch (NumberFormatException ignored) {
-            try {
-                return Double.parseDouble(value);
-            } catch (NumberFormatException ignored2) {
-                return value; // Връщаме като String, ако не може да се парсне като число.
-            }
+        } else if (value.matches("-?\\d+(\\.\\d+)?")) {
+            return Double.parseDouble(value);
+        } else {
+            return value;
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Filter<Advertisement> createFilter(FieldExtractor<Advertisement, ?> fieldExtractor, Object value, String operator) {
         if (value instanceof Integer intValue) {
             return new CompareFilter<>((FieldExtractor<Advertisement, Integer>) fieldExtractor, intValue, ComparisonOperator.fromString(operator));

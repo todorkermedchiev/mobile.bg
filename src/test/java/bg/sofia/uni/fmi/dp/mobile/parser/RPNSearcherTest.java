@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RPNSearcherTest {
-    private static final String ENGINE_TYPE = "engineType"; // TODO: use enum
+    private static final String ENGINE_TYPE = "engineType";
 
     private static final Advertisement BMW_X5 = new Advertisement("1", 10000,
             new Vehicle(VehicleType.CAR, "bmw", "x5", 2000).addAttribute(ENGINE_TYPE, "petrol"),
