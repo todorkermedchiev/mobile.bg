@@ -2,40 +2,40 @@ package bg.sofia.uni.fmi.dp.mobile.cli.command.commands;
 
 import bg.sofia.uni.fmi.dp.mobile.advertisement.Advertisement;
 import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementService;
+import bg.sofia.uni.fmi.dp.mobile.cli.localization.LocalizationService;
 
 import java.io.PrintStream;
 import java.util.Scanner;
 
 public class AddAdvertisementCommand implements Command {
-    private static final String COMMAND_NAME = "add-advertisement";
-    private static final String COMMAND_DESCRIPTION = "Add a new advertisement";
-
     private final AdvertisementService service;
     private final Scanner scanner;
     private final PrintStream printer;
+    private final LocalizationService localization;
 
-    public AddAdvertisementCommand(AdvertisementService service, Scanner scanner, PrintStream printer) {
+    public AddAdvertisementCommand(AdvertisementService service, LocalizationService localization, Scanner scanner, PrintStream printer) {
         this.service = service;
         this.scanner = scanner;
         this.printer = printer;
+        this.localization = localization;
     }
 
     @Override
     public void execute() {
-        Advertisement advertisement = new AdvertisementCreator(printer, scanner).create();
+        Advertisement advertisement = new AdvertisementCreator(printer, scanner, localization).create();
 
         service.addAdvertisement(advertisement);
-        System.out.println("Advertisement added successfully!");
+        printer.println(localization.getMessage("message.advertisement.added"));
     }
 
     @Override
     public String getName() {
-        return COMMAND_NAME;
+        return localization.getMessage("command.add.name");
     }
 
     @Override
     public String getDescription() {
-        return COMMAND_DESCRIPTION;
+        return localization.getMessage("command.add.description");
     }
 }
 

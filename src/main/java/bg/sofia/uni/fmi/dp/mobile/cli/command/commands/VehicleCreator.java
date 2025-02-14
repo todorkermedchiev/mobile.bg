@@ -1,5 +1,6 @@
 package bg.sofia.uni.fmi.dp.mobile.cli.command.commands;
 
+import bg.sofia.uni.fmi.dp.mobile.cli.localization.LocalizationService;
 import bg.sofia.uni.fmi.dp.mobile.vehicle.Vehicle;
 import bg.sofia.uni.fmi.dp.mobile.vehicle.VehicleBuilder;
 import bg.sofia.uni.fmi.dp.mobile.vehicle.VehicleType;
@@ -11,68 +12,102 @@ import java.util.List;
 import java.util.Scanner;
 
 public class VehicleCreator {
-    private VehicleBuilder builder;
-    private PrintStream printer;
-    private Scanner scanner;
+    private final VehicleBuilder builder;
+    private final PrintStream printer;
+    private final Scanner scanner;
+    private final LocalizationService localization;
 
-    private final List<CommandStep> steps = List.of(
-            () -> {
-                printer.println("Enter vehicle type. Available types:");
-                Arrays.stream(VehicleType.values()).forEach(v -> printer.println(v));
-                String type = scanner.nextLine();
-                builder.setType(VehicleType.valueOf(VehicleType.class, type));
-            },
-            () -> {
-                printer.println("Enter vehicle brand:");
-                String brand = scanner.nextLine();
-                builder.setBrand(brand);
-            },
-            () -> {
-                printer.println("Enter vehicle model:");
-                String model = scanner.nextLine();
-                builder.setModel(model);
-            },
-            () -> {
-                printer.println("Enter vehicle make year:");
-                Integer year = null;
-                while (year == null || year <= 0 || year > Year.now().getValue()) {
-                    try {
-                        year = Integer.parseInt(scanner.nextLine());
-                    } catch (NumberFormatException e) {
-                        printer.println("Invalid year. Enter again:");
-                    }
-                }
-                builder.setYear(year);
-            },
-            () -> {
-                printer.println("Do you want to add vehicle attributes?");
-                String reply = scanner.nextLine();
+    private final List<CommandStep> steps;
 
-                while (reply.equalsIgnoreCase("yes")) {
-                    printer.println("Enter attribute name:");
-                    String name = scanner.nextLine();
-                    printer.println("Enter attribute value:");
-                    String value = scanner.nextLine();
-                    builder.addAttribute(name, value);
-
-                    printer.println("Do you want to add more attributes?");
-                    reply = scanner.nextLine();
-                }
-            }
-    );
-
-    public VehicleCreator(PrintStream printer, Scanner scanner) {
-        this(new VehicleBuilder(), printer, scanner);
+    public VehicleCreator(PrintStream printer, Scanner scanner, LocalizationService localization) {
+        this(new VehicleBuilder(), localization, printer, scanner);
     }
 
-    public VehicleCreator(VehicleBuilder builder, PrintStream printer, Scanner scanner) {
+    public VehicleCreator(VehicleBuilder builder, LocalizationService localization, PrintStream printer, Scanner scanner) {
         this.builder = builder;
         this.printer = printer;
         this.scanner = scanner;
+        this.localization = localization;
+
+        this.steps = List.of(
+                this::askVehicleType,
+                this::askBrand,
+                this::askModel,
+                this::askYear,
+                this::askAttributes
+        );
     }
+
+    private void askVehicleType() {
+        printer.println(localization.getMessage("prompt.enter.vehicle.type"));
+        Arrays.stream(VehicleType.values()).forEach(printer::println);
+
+        while (true) {
+            try {
+                String typeInput = scanner.nextLine().toUpperCase();
+                builder.setType(VehicleType.valueOf(typeInput));
+                break;
+            } catch (IllegalArgumentException e) {
+                printer.println(localization.getMessage("error.invalid.vehicle.type"));
+            }
+        }
+    }
+
+    private void askBrand() {
+        printer.println(localization.getMessage("prompt.enter.vehicle.brand"));
+        builder.setBrand(scanner.nextLine());
+    }
+
+    private void askModel() {
+        printer.println(localization.getMessage("prompt.enter.vehicle.model"));
+        builder.setModel(scanner.nextLine());
+    }
+
+    private void askYear() {
+        printer.println(localization.getMessage("prompt.enter.vehicle.year"));
+        Integer year = null;
+        while (year == null || year <= 0 || year > Year.now().getValue()) {
+            try {
+                year = Integer.parseInt(scanner.nextLine());
+                if (year > 0 && year <= Year.now().getValue()) {
+                    builder.setYear(year);
+                } else {
+                    printer.println(localization.getMessage("error.invalid.year"));
+                }
+            } catch (NumberFormatException e) {
+                printer.println(localization.getMessage("error.invalid.year"));
+            }
+        }
+    }
+
+    private void askAttributes() {
+        String reply;
+
+        do {
+            printer.println(localization.getMessage("prompt.add.vehicle.attributes"));
+            reply = scanner.nextLine().trim();
+        } while (!reply.equalsIgnoreCase(localization.getMessage("reply.yes"))
+                && !reply.equalsIgnoreCase(localization.getMessage("reply.no")));
+
+        while (reply.equalsIgnoreCase(localization.getMessage("reply.yes"))) {
+            printer.println(localization.getMessage("prompt.enter.attribute.name"));
+            String name = scanner.nextLine();
+            printer.println(localization.getMessage("prompt.enter.attribute.value"));
+            String value = scanner.nextLine();
+            builder.addAttribute(name, value);
+
+            do {
+                printer.println(localization.getMessage("prompt.add.more.attributes"));
+                reply = scanner.nextLine().trim();
+            } while (!reply.equalsIgnoreCase(localization.getMessage("reply.yes"))
+                    && !reply.equalsIgnoreCase(localization.getMessage("reply.no")));
+        }
+    }
+
 
     public Vehicle create() {
         steps.forEach(CommandStep::execute);
         return builder.build();
     }
 }
+

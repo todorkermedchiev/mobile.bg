@@ -2,6 +2,7 @@ package bg.sofia.uni.fmi.dp.mobile.cli.command.commands;
 
 import bg.sofia.uni.fmi.dp.mobile.advertisement.Advertisement;
 import bg.sofia.uni.fmi.dp.mobile.advertisement.AdvertisementService;
+import bg.sofia.uni.fmi.dp.mobile.cli.localization.LocalizationService;
 import bg.sofia.uni.fmi.dp.mobile.filter.Filter;
 import bg.sofia.uni.fmi.dp.mobile.notification.NotificationRule;
 import bg.sofia.uni.fmi.dp.mobile.notification.subscriber.AdvertisementSubscriber;
@@ -17,51 +18,66 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class SubscribeCommand implements Command {
-    private static final String COMMAND_NAME = "subscribe";
-    private static final String COMMAND_DESCRIPTION = "subscribe to get notifications for new advertisements";
+    private static final String COMMAND_NAME_KEY = "command.subscribe.name";
+    private static final String COMMAND_DESCRIPTION_KEY = "command.subscribe.description";
 
     private final AdvertisementService advertisementService;
     private final QueryFilterCreator queryFilterCreator;
     private final Scanner scanner;
     private final PrintStream printer;
+    private final LocalizationService localization;
 
-    public SubscribeCommand(AdvertisementService advertisementService, QueryFilterCreator queryFilterCreator, Scanner scanner, PrintStream printer) {
+    public SubscribeCommand(
+            AdvertisementService advertisementService,
+            QueryFilterCreator queryFilterCreator,
+            LocalizationService localization,
+            Scanner scanner,
+            PrintStream printer
+    ) {
         this.advertisementService = advertisementService;
         this.queryFilterCreator = queryFilterCreator;
         this.scanner = scanner;
         this.printer = printer;
+        this.localization = localization;
     }
 
     @Override
     public void execute() {
-        printer.println("Enter the notification method. Available methods:");
+        printer.println(localization.getMessage("prompt.enter.notification.method"));
         Arrays.stream(SubscriberType.values()).forEach(t -> printer.println(t.getName()));
-        String subscriberType = scanner.nextLine();
 
-        Map<String, String> params = new HashMap<>();
-        for (String argument : SubscriberType.getByName(subscriberType).getArguments()) {
-            printer.println("Enter value for " + argument + ":");
-            String value = scanner.nextLine();
-            params.put(argument, value);
+        SubscriberType subscriberType = null;
+        while (subscriberType == null) {
+            try {
+                subscriberType = SubscriberType.getByName(scanner.nextLine());
+            } catch (RuntimeException e) {
+                printer.println(localization.getMessage("error.invalid.notification.method"));
+            }
         }
 
-        AdvertisementSubscriber advertisementSubscriber = new AdvertisementSubscriberFactory().createSubscriber(subscriberType, params);
+        Map<String, String> params = new HashMap<>();
+        for (String argument : subscriberType.getArguments()) {
+            printer.printf(localization.getMessage("prompt.enter.value"), argument);
+            params.put(argument, scanner.nextLine());
+        }
 
-        printer.println("Enter notification criteria (query):");
+        AdvertisementSubscriber subscriber = new AdvertisementSubscriberFactory().createSubscriber(subscriberType.getName(), params);
+
+        printer.println(localization.getMessage("prompt.enter.notification.criteria"));
         String query = scanner.nextLine();
         Filter<Advertisement> filter = queryFilterCreator.create(query);
 
-        NotificationRule notificationRule = new NotificationRule(List.of(filter), advertisementSubscriber);
+        NotificationRule notificationRule = new NotificationRule(List.of(filter), subscriber);
         advertisementService.subscribe(notificationRule);
     }
 
     @Override
     public String getName() {
-        return COMMAND_NAME;
+        return localization.getMessage(COMMAND_NAME_KEY);
     }
 
     @Override
     public String getDescription() {
-        return COMMAND_DESCRIPTION;
+        return localization.getMessage(COMMAND_DESCRIPTION_KEY);
     }
 }

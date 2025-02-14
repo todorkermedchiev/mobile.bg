@@ -2,34 +2,35 @@ package bg.sofia.uni.fmi.dp.mobile.cli;
 
 import bg.sofia.uni.fmi.dp.mobile.cli.command.CommandExecutor;
 import bg.sofia.uni.fmi.dp.mobile.cli.command.CommandRegistry;
+import bg.sofia.uni.fmi.dp.mobile.cli.localization.LocalizationService;
 
 import java.io.PrintStream;
 import java.util.Scanner;
 
 public class CLI {
     private final CommandRegistry registry;
+    private final LocalizationService localizationService;
     private final Scanner scanner;
     private final PrintStream printer;
 
-    private static final String EXIT_COMMAND = "exit";
-
-    public CLI(CommandRegistry registry) {
-        this(registry, new Scanner(System.in), System.out);
+    public CLI(CommandRegistry registry, LocalizationService localization) {
+        this(registry, localization, new Scanner(System.in), System.out);
     }
 
-    public CLI(CommandRegistry registry, Scanner scanner, PrintStream printer) {
+    public CLI(CommandRegistry registry, LocalizationService localization, Scanner scanner, PrintStream printer) {
         this.registry = registry;
+        this.localizationService = localization;
         this.printer = printer;
         this.scanner = scanner;
     }
 
     public void start() {
-        CommandExecutor executor = new CommandExecutor(registry);
+        CommandExecutor executor = new CommandExecutor(registry, localizationService);
 
         while (true) {
             printer.print(">> ");
             String input = this.scanner.nextLine().trim();
-            if (input.equalsIgnoreCase(EXIT_COMMAND)) {
+            if (input.equalsIgnoreCase(localizationService.getMessage("command.exit"))) {
                 break;
             }
 
