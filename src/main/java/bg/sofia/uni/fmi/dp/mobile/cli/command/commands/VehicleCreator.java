@@ -81,20 +81,29 @@ public class VehicleCreator {
     }
 
     private void askAttributes() {
-        printer.println(localization.getMessage("prompt.add.vehicle.attributes"));
-        String reply = scanner.nextLine();
+        String reply;
 
-        while (reply.equalsIgnoreCase("yes")) {
+        do {
+            printer.println(localization.getMessage("prompt.add.vehicle.attributes"));
+            reply = scanner.nextLine().trim();
+        } while (!reply.equalsIgnoreCase(localization.getMessage("reply.yes"))
+                && !reply.equalsIgnoreCase(localization.getMessage("reply.no")));
+
+        while (reply.equalsIgnoreCase(localization.getMessage("reply.yes"))) {
             printer.println(localization.getMessage("prompt.enter.attribute.name"));
             String name = scanner.nextLine();
             printer.println(localization.getMessage("prompt.enter.attribute.value"));
             String value = scanner.nextLine();
             builder.addAttribute(name, value);
 
-            printer.println(localization.getMessage("prompt.add.more.attributes"));
-            reply = scanner.nextLine();
+            do {
+                printer.println(localization.getMessage("prompt.add.more.attributes"));
+                reply = scanner.nextLine().trim();
+            } while (!reply.equalsIgnoreCase(localization.getMessage("reply.yes"))
+                    && !reply.equalsIgnoreCase(localization.getMessage("reply.no")));
         }
     }
+
 
     public Vehicle create() {
         steps.forEach(CommandStep::execute);
